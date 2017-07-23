@@ -10,10 +10,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170723161212) do
+ActiveRecord::Schema.define(version: 20170723162644) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "answers", force: :cascade do |t|
+    t.integer  "question_id"
+    t.string   "content"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["question_id"], name: "index_answers_on_question_id", using: :btree
+  end
+
+  create_table "exams", force: :cascade do |t|
+    t.integer  "subject_id"
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subject_id"], name: "index_exams_on_subject_id", using: :btree
+  end
+
+  create_table "grades", force: :cascade do |t|
+    t.text     "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "questions", force: :cascade do |t|
+    t.integer  "exam_id"
+    t.string   "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exam_id"], name: "index_questions_on_exam_id", using: :btree
+  end
 
   create_table "schools", force: :cascade do |t|
     t.integer  "user_id"
@@ -23,6 +53,33 @@ ActiveRecord::Schema.define(version: 20170723161212) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_schools_on_user_id", using: :btree
+  end
+
+  create_table "scores", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "exam_id"
+    t.integer  "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exam_id"], name: "index_scores_on_exam_id", using: :btree
+    t.index ["user_id"], name: "index_scores_on_user_id", using: :btree
+  end
+
+  create_table "subjects", force: :cascade do |t|
+    t.integer  "grade_id"
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["grade_id"], name: "index_subjects_on_grade_id", using: :btree
+  end
+
+  create_table "user_grades", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "grade_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["grade_id"], name: "index_user_grades_on_grade_id", using: :btree
+    t.index ["user_id"], name: "index_user_grades_on_user_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
@@ -42,5 +99,13 @@ ActiveRecord::Schema.define(version: 20170723161212) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
+  add_foreign_key "answers", "questions"
+  add_foreign_key "exams", "subjects"
+  add_foreign_key "questions", "exams"
   add_foreign_key "schools", "users"
+  add_foreign_key "scores", "exams"
+  add_foreign_key "scores", "users"
+  add_foreign_key "subjects", "grades"
+  add_foreign_key "user_grades", "grades"
+  add_foreign_key "user_grades", "users"
 end
