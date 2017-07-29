@@ -1,3 +1,3 @@
 class Grade < ApplicationRecord
-  has_many :users, through: :user_grades
+  has_many :users
 end
