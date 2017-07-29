@@ -6,6 +6,10 @@ class ApplicationController < ActionController::Base
     User.find_by(id: auth_token[:user_id]) if user_id_in_token?
   end
 
+  def sign_in_user(user)
+    render json: payload(user)
+  end
+
   def payload(user)
     return nil unless user && user.id
     {
