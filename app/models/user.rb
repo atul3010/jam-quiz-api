@@ -7,4 +7,5 @@ class User < ApplicationRecord
   has_many :schools
   has_many :schedules
   has_many :exams, through: :schedules, source: :exam
+  has_many :submissions
 end
